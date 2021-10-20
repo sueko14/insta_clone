@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/model/user_repository.dart';
+import 'package:insta_clone/model/repositories/user_repository.dart';
 
 class LoginViewModel extends ChangeNotifier{
   final UserRepository userRepository;
