@@ -21,7 +21,7 @@ class PostPage extends StatelessWidget {
             ButtonWithIcon(
               iconData: FontAwesomeIcons.images,
               label: S.of(context).gallery,
-              onPressed: _openPostUploadScreen(
+              onPressed: () => _openPostUploadScreen(
                 UploadType.GALLERY,
                 context,
               ),
@@ -30,7 +30,7 @@ class PostPage extends StatelessWidget {
             ButtonWithIcon(
               iconData: FontAwesomeIcons.camera,
               label: S.of(context).camera,
-              onPressed: _openPostUploadScreen(
+              onPressed: () => _openPostUploadScreen(
                 UploadType.CAMERA,
                 context,
               ),

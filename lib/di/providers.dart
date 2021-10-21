@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/model/db/database_manager.dart';
+import 'package:insta_clone/model/location/location_manager.dart';
 import 'package:insta_clone/model/repositories/post_repository.dart';
 import 'package:insta_clone/model/repositories/user_repository.dart';
 import 'package:insta_clone/view_model/login_view_model.dart';
@@ -16,6 +17,9 @@ List<SingleChildWidget> globalProviders = [
 List<SingleChildWidget> independentModels = [
   Provider<DatabaseManager>(
     create: (_) => DatabaseManager(),
+  ),
+  Provider<LocationManager>(
+    create: (_) => LocationManager(),
   )
 ];
 
@@ -24,8 +28,11 @@ List<SingleChildWidget> dependentModels = [
     update: (_, dbManager, repo) => UserRepository(dbManager: dbManager),
   ),
   //TODO
-  ProxyProvider<DatabaseManager, PostRepository>(
-    update: (_, dbManager, repo) => PostRepository(),
+  ProxyProvider2<DatabaseManager, LocationManager, PostRepository>(
+    update: (_, dbManager, locationManager, repo) => PostRepository(
+      dbManager: dbManager,
+      locationManager: locationManager,
+    ),
   ),
 ];
 
