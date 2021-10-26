@@ -17,6 +17,7 @@ class PostViewModel extends ChangeNotifier {
   File? imageFile;
   Location? location;
   String locationString = "";
+  String caption = "";
 
   Future<void> pickImage(UploadType uploadType) async {
     isImagePicked = false;
@@ -42,6 +43,32 @@ class PostViewModel extends ChangeNotifier {
   }
 
   void cancelPost() {
+    isProcessing = false;
+    isImagePicked = false;
+    notifyListeners();
+  }
+
+  Future<void> updateLocation(double latitude, double longitude) async {
+    location = await postRepository.updateLocation(latitude,longitude);
+    locationString = (location != null) ? _toLocationString(location!) : "";
+    notifyListeners();
+  }
+
+  Future<void> post() async{
+    isProcessing = true;
+    notifyListeners();
+
+    if(imageFile == null){
+      return;
+    }
+    await postRepository.post(
+      UserRepository.currentUser!,
+      imageFile!,
+      caption,
+      location,
+      locationString,
+    );
+
     isProcessing = false;
     isImagePicked = false;
     notifyListeners();

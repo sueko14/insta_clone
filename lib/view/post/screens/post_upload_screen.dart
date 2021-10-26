@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/utils/constants.dart';
+import 'package:insta_clone/view/common/dialog/confirm_dialog.dart';
 import 'package:insta_clone/view/post/components/post_caption_part.dart';
+import 'package:insta_clone/view/post/components/post_location_part.dart';
 import 'package:insta_clone/view_model/post_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -37,9 +39,18 @@ class PostUploadScreen extends StatelessWidget {
                         onPressed: () => _cancelPost(context),
                         icon: const Icon(Icons.close),
                       )
-                    : const IconButton(
-                        onPressed: null,
-                        icon: Icon(Icons.done),
+                    : IconButton(
+                        onPressed: () => showConfirmDialog(
+                          context: context,
+                          title: S.of(context).post,
+                          content: S.of(context).postConfirm,
+                          onConfirmed: (isConfirmed){
+                            if(isConfirmed){
+                              _post(context);
+                            }
+                          },
+                        ),
+                        icon: const Icon(Icons.done),
                       ),
               ],
             ),
@@ -53,8 +64,7 @@ class PostUploadScreen extends StatelessWidget {
                           const Divider(),
                           PostCaptionPart(from: PostCaptionOpenMode.FROM_POST),
                           const Divider(),
-                          // TODO
-                          //postLocationPart(),
+                          PostLocationPart(),
                           const Divider(),
                         ],
                       )
@@ -66,7 +76,12 @@ class PostUploadScreen extends StatelessWidget {
   _cancelPost(BuildContext context) {
     final postViewModel = context.read<PostViewModel>();
     postViewModel.cancelPost();
+    Navigator.pop(context);
+  }
 
+  void _post(BuildContext context) async {
+    final postViewModel = context.read<PostViewModel>();
+    await postViewModel.post();
     Navigator.pop(context);
   }
 }
