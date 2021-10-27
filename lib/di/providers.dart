@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:insta_clone/model/db/database_manager.dart';
 import 'package:insta_clone/model/location/location_manager.dart';
 import 'package:insta_clone/model/repositories/post_repository.dart';
 import 'package:insta_clone/model/repositories/user_repository.dart';
+import 'package:insta_clone/view_model/feed_view_model.dart';
 import 'package:insta_clone/view_model/login_view_model.dart';
 import 'package:insta_clone/view_model/post_view_model.dart';
 import 'package:provider/provider.dart';
@@ -47,5 +47,11 @@ List<SingleChildWidget> viewModels = [
       userRepository: context.read<UserRepository>(),
       postRepository: context.read<PostRepository>(),
     ),
-  )
+  ),
+  ChangeNotifierProvider<FeedViewModel>(
+    create: (context) => FeedViewModel(
+      userRepository: context.read<UserRepository>(),
+      postRepository: context.read<PostRepository>(),
+    ),
+  ),
 ];

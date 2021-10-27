@@ -56,4 +56,15 @@ class PostRepository {
     );
     await dbManager.insertPost(post);
   }
+
+  Future<List<Post>> getPosts(FeedMode feedMode, User feedUser) async{
+    if(feedMode == FeedMode.FROM_FEED){
+      //TODO 自分＋フォローしてる人
+      return dbManager.getPostsMineAndFollowing(feedUser.userId);
+    }else{
+      //TODO プロフィール画面に表示しているユーザーの投稿（必ずしも自分とは限らない）
+      //return dbManager.getPostsByUser(feedUser.userId);
+      return [];
+    }
+  }
 }

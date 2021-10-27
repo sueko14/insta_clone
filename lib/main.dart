@@ -8,10 +8,12 @@ import 'package:insta_clone/view/home_screen.dart';
 import 'package:insta_clone/view/login/screens/login_screen.dart';
 import 'package:insta_clone/view_model/login_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  timeAgo.setLocaleMessages("ja", timeAgo.JaMessages());
   runApp(
     MultiProvider(
       providers: globalProviders,
