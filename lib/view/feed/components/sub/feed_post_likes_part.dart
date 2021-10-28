@@ -45,7 +45,10 @@ class FeedPostLikesPart extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CommentScreen(post: post),
+        builder: (context) => CommentScreen(
+          post: post,
+          postUser: postUser,
+        ),
       ),
     );
   }

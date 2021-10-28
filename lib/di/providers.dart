@@ -2,6 +2,7 @@ import 'package:insta_clone/model/db/database_manager.dart';
 import 'package:insta_clone/model/location/location_manager.dart';
 import 'package:insta_clone/model/repositories/post_repository.dart';
 import 'package:insta_clone/model/repositories/user_repository.dart';
+import 'package:insta_clone/view_model/comment_view_model.dart';
 import 'package:insta_clone/view_model/feed_view_model.dart';
 import 'package:insta_clone/view_model/login_view_model.dart';
 import 'package:insta_clone/view_model/post_view_model.dart';
@@ -27,7 +28,6 @@ List<SingleChildWidget> dependentModels = [
   ProxyProvider<DatabaseManager, UserRepository>(
     update: (_, dbManager, repo) => UserRepository(dbManager: dbManager),
   ),
-  //TODO
   ProxyProvider2<DatabaseManager, LocationManager, PostRepository>(
     update: (_, dbManager, locationManager, repo) => PostRepository(
       dbManager: dbManager,
@@ -50,6 +50,12 @@ List<SingleChildWidget> viewModels = [
   ),
   ChangeNotifierProvider<FeedViewModel>(
     create: (context) => FeedViewModel(
+      userRepository: context.read<UserRepository>(),
+      postRepository: context.read<PostRepository>(),
+    ),
+  ),
+  ChangeNotifierProvider<CommentViewModel>(
+    create: (context) => CommentViewModel(
       userRepository: context.read<UserRepository>(),
       postRepository: context.read<PostRepository>(),
     ),
