@@ -17,9 +17,9 @@ class _CommonRichTextState extends State<CommonRichText> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         setState(() {
-          _maxLines = 100;
+          (_maxLines == 2) ? _maxLines = 1000 : _maxLines = 2;
         });
       },
       child: RichText(

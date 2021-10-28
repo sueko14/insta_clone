@@ -67,4 +67,8 @@ class PostRepository {
       return [];
     }
   }
+
+  Future<void> updatePost(Post updatePost) async{
+    return await dbManager.updatePost(updatePost);
+  }
 }
