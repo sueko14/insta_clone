@@ -4,7 +4,10 @@ import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/common/components/user_card.dart';
+import 'package:insta_clone/view/common/dialog/confirm_dialog.dart';
 import 'package:insta_clone/view/feed/screen/feed_post_edit_screen.dart';
+import 'package:insta_clone/view_model/feed_view_model.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 class FeedPostHeaderPart extends StatelessWidget {
@@ -60,7 +63,7 @@ class FeedPostHeaderPart extends StatelessWidget {
     );
   }
 
-  // TODO
+  //
   _onPopupMenuSelected(BuildContext context, PostMenu selectedMenu) {
     if (selectedMenu == PostMenu.EDIT) {
       Navigator.push(
@@ -78,6 +81,22 @@ class FeedPostHeaderPart extends StatelessWidget {
         post.imageUrl,
         subject: post.caption,
       );
+    } else if (selectedMenu == PostMenu.DELETE) {
+      showConfirmDialog(
+        context: context,
+        title: S.of(context).deletePost,
+        content: S.of(context).deletePostConfirm,
+        onConfirmed: (isConfirmed){
+          if(isConfirmed){
+            _deletePost(context,post);
+          }
+        },
+      );
     }
+  }
+
+  void _deletePost(BuildContext context, Post post) async{
+    final feedViewModel = context.read<FeedViewModel>();
+    await feedViewModel.deletePost(post, feedMode);//削除したあと表示する画面が違うからfeedMode渡す
   }
 }

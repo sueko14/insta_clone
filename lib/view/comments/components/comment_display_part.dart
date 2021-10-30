@@ -21,30 +21,37 @@ class CommentDisplayPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        CirclePhoto(
-          photoUrl: postUserPhotoUrl,
-          isImageFromFile: false,
-        ),
-        const SizedBox(width: 8.0),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CommonRichText(
-                name: name,
-                text: text,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        splashColor: Colors.grey,
+        onLongPress: onLongPressed,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            CirclePhoto(
+              photoUrl: postUserPhotoUrl,
+              isImageFromFile: false,
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  CommonRichText(
+                    name: name,
+                    text: text,
+                  ),
+                  Text(
+                    createTimeAgoString(postDateTime),
+                    style: timeAgoTextStyle,
+                  ),
+                ],
               ),
-              Text(
-                createTimeAgoString(postDateTime),
-                style: timeAgoTextStyle,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

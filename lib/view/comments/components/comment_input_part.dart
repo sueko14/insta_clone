@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/data_models/post.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/style.dart';
 import 'package:insta_clone/view/common/components/circle_photo.dart';
@@ -6,6 +7,9 @@ import 'package:insta_clone/view_model/comment_view_model.dart';
 import 'package:provider/provider.dart';
 
 class CommentInputPart extends StatefulWidget {
+  final Post post;
+  CommentInputPart({required this.post});
+
   @override
   _CommentInputPartState createState() => _CommentInputPartState();
 }
@@ -42,6 +46,7 @@ class _CommentInputPartState extends State<CommentInputPart> {
           isImageFromFile: false,
         ),
         title: TextField(
+          maxLines: null,
           controller: _commentInputController,
           style: commentInputTextStyle,
           decoration: InputDecoration(
@@ -55,7 +60,7 @@ class _CommentInputPartState extends State<CommentInputPart> {
             style: TextStyle(
                 color: isCommentPostEnabled ? Colors.blue : Colors.grey),
           ),
-          onPressed: isCommentPostEnabled ? () => _postComment(context) : null,
+          onPressed: isCommentPostEnabled ? () => _postComment(context, widget.post) : null,
         ),
       ),
     );
@@ -75,5 +80,9 @@ class _CommentInputPartState extends State<CommentInputPart> {
   }
 
   // TODO
-  _postComment(BuildContext context) {}
+  _postComment(BuildContext context, Post post) async{
+    final commentViewModel = context.read<CommentViewModel>();
+    await commentViewModel.postComment(post);
+    _commentInputController.clear();
+  }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/data_models/comment.dart';
+import 'package:insta_clone/data_models/like.dart';
 import 'package:insta_clone/data_models/post.dart';
 import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/model/repositories/post_repository.dart';
@@ -46,6 +48,37 @@ class FeedViewModel extends ChangeNotifier{
       post.copyWith(caption:caption)
     );
     await getPosts(feedMode);
+    isProcessing = false;
+    notifyListeners();
+  }
+
+  Future<List<Comment>> getComments(String postId) async{
+    return await postRepository.getComments(postId);
+  }
+
+  Future<void> likeIt(Post post) async{
+    await postRepository.likeIt(post, currentUser);
+    notifyListeners();
+  }
+
+  Future<LikeResult> getLikeResult(String postId) async{
+    return await postRepository.getLikeResult(postId, currentUser);
+  }
+
+  Future<void> unLikeIt(Post post) async{
+    await postRepository.unLikeIt(post, currentUser);
+    notifyListeners();
+  }
+
+  Future<void> deletePost(Post post, FeedMode feedMode)async {
+    isProcessing = true;
+    notifyListeners();
+
+    await postRepository.deletePost(
+      post.postId,
+      post.imageStoragePath,
+    );
+
     isProcessing = false;
     notifyListeners();
   }
