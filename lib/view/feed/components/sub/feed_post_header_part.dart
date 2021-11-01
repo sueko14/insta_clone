@@ -6,6 +6,7 @@ import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/common/components/user_card.dart';
 import 'package:insta_clone/view/common/dialog/confirm_dialog.dart';
 import 'package:insta_clone/view/feed/screen/feed_post_edit_screen.dart';
+import 'package:insta_clone/view/profile/screen/profile_screen.dart';
 import 'package:insta_clone/view_model/feed_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -29,8 +30,7 @@ class FeedPostHeaderPart extends StatelessWidget {
       photoUrl: postUser.photoUrl,
       title: postUser.inAppUserName,
       subTitle: post.locationString,
-      onTap: null,
-      //TODO
+      onTap: () => _openProfile(context, postUser),
       trailing: PopupMenuButton(
         icon: const Icon(Icons.more_vert),
         onSelected: (PostMenu value) => _onPopupMenuSelected(context, value),
@@ -86,17 +86,33 @@ class FeedPostHeaderPart extends StatelessWidget {
         context: context,
         title: S.of(context).deletePost,
         content: S.of(context).deletePostConfirm,
-        onConfirmed: (isConfirmed){
-          if(isConfirmed){
-            _deletePost(context,post);
+        onConfirmed: (isConfirmed) {
+          if (isConfirmed) {
+            _deletePost(context, post);
           }
         },
       );
     }
   }
 
-  void _deletePost(BuildContext context, Post post) async{
+  void _deletePost(BuildContext context, Post post) async {
     final feedViewModel = context.read<FeedViewModel>();
-    await feedViewModel.deletePost(post, feedMode);//削除したあと表示する画面が違うからfeedMode渡す
+    await feedViewModel.deletePost(
+        post, feedMode); //削除したあと表示する画面が違うからfeedMode渡す
+  }
+
+  _openProfile(BuildContext context, User postUser) {
+    final feedViewModel = context.read<FeedViewModel>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfileScreen(
+          profileMode: postUser.userId == feedViewModel.currentUser.userId
+              ? ProfileMode.MYSELF
+              : ProfileMode.OTHER,
+          selectedUser: postUser,
+        ),
+      ),
+    );
   }
 }

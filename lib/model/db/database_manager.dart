@@ -99,7 +99,22 @@ class DatabaseManager {
   }
 
   Future<List<Post>> getPostsByUser(String userId) async {
-    return [];
+    final query = await _db.collection("posts").get();
+    if (query.docs.isEmpty) {
+      return [];
+    }
+    var results = <Post>[];
+    await _db
+        .collection("posts")
+        .where("userId", isEqualTo: userId)
+        .orderBy("postDateTime", descending: true)
+        .get()
+        .then((value) {
+          for (var element in value.docs) {
+            results.add(Post.fromMap(element.data()));
+          }
+    });
+    return results;
   }
 
   Future<List<String>> getFollowingUserIds(String userId) async {
@@ -212,13 +227,17 @@ class DatabaseManager {
     await postRef.delete();
 
     //COMMENT
-    final commentRef = await _db.collection("comments").where("postId",isEqualTo: postId).get();
+    final commentRef = await _db
+        .collection("comments")
+        .where("postId", isEqualTo: postId)
+        .get();
     for (var element in commentRef.docs) {
       final ref = _db.collection("comments").doc(element.id);
       await ref.delete();
     }
     //LIKE
-    final likeRef = await _db.collection("likes").where("postId",isEqualTo: postId).get();
+    final likeRef =
+        await _db.collection("likes").where("postId", isEqualTo: postId).get();
     for (var element in likeRef.docs) {
       final ref = _db.collection("likes").doc(element.id);
       await ref.delete();
@@ -226,5 +245,22 @@ class DatabaseManager {
     //STORAGEから画像削除
     final storageRef = FirebaseStorage.instance.ref().child(imageStoragePath);
     storageRef.delete();
+  }
+
+  Future<List<String>> getFollowerUserIds(String userId) async{
+    final query = await _db.collection("users").doc(userId).collection("followers").get();
+    if(query.docs.isEmpty){
+      return [];
+    }
+    var userIds = <String>[];
+    for (var element in query.docs) {
+      userIds.add(element.data()["userId"]);
+    }
+    return userIds;
+  }
+
+  Future<void> updateProfile(User updateUser) async{
+    final reference = _db.collection("users").doc(updateUser.userId);
+    await reference.update(updateUser.toMap());
   }
 }

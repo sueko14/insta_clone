@@ -6,6 +6,7 @@ import 'package:insta_clone/view_model/comment_view_model.dart';
 import 'package:insta_clone/view_model/feed_view_model.dart';
 import 'package:insta_clone/view_model/login_view_model.dart';
 import 'package:insta_clone/view_model/post_view_model.dart';
+import 'package:insta_clone/view_model/profile_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -56,6 +57,12 @@ List<SingleChildWidget> viewModels = [
   ),
   ChangeNotifierProvider<CommentViewModel>(
     create: (context) => CommentViewModel(
+      userRepository: context.read<UserRepository>(),
+      postRepository: context.read<PostRepository>(),
+    ),
+  ),
+  ChangeNotifierProvider<ProfileViewModel>(
+    create: (context) => ProfileViewModel(
       userRepository: context.read<UserRepository>(),
       postRepository: context.read<PostRepository>(),
     ),

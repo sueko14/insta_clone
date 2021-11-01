@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:insta_clone/generated/l10n.dart';
+import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/activities/pages/activity_page.dart';
 import 'package:insta_clone/view/feed/pages/feed_page.dart';
 import 'package:insta_clone/view/post/pages/post_page.dart';
@@ -25,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
       const SearchPage(),
       const PostPage(),
       const ActivityPage(),
-      const ProfilePage(),
+      ProfilePage(
+        profileMode: ProfileMode.MYSELF,
+      ),
     ];
     super.initState();
   }
@@ -40,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         showUnselectedLabels: false,
         //selectedItemColor: Colors.cyanAccent,
         currentIndex: _currentIndex,
-        onTap: (index){
+        onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
