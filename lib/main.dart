@@ -56,9 +56,9 @@ class MyApp extends StatelessWidget {
         future: loginViewModel.isSignedIn(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData && snapshot.data == true) {
-            return const HomeScreen();
+            return HomeScreen();
           } else {
-            return const LoginScreen();
+            return LoginScreen();
           }
         },
       ),

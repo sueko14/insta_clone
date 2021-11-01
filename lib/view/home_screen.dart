@@ -9,8 +9,6 @@ import 'package:insta_clone/view/profile/page/profile_page.dart';
 import 'package:insta_clone/view/search/pages/search_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
