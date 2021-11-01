@@ -20,10 +20,20 @@ class ProfileViewModel extends ChangeNotifier {
   User get currentUser => UserRepository.currentUser!; //ログインしているため
   bool isProcessing = false;
   List<Post> posts = [];
+  List<String> popProfileUserIds = [];
+  String popUserId = "";
 
   bool isFollowingProfileUser = false;
 
-  void setProfileUser(ProfileMode profileMode, User? selectedUser) {
+  void setProfileUser(
+    ProfileMode profileMode,
+    User? selectedUser,
+    String? popProfileUserId,
+  ) {
+    if (popProfileUserId != null) {
+      popProfileUserIds.add(popProfileUserId);
+    }
+
     if (profileMode == ProfileMode.MYSELF) {
       profileUser = currentUser;
     } else {
@@ -92,20 +102,31 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> follow() async{
+  Future<void> follow() async {
     await userRepository.follow(profileUser);
     isFollowingProfileUser = true;
     notifyListeners();
   }
 
-  Future<void> checkIsFollowing() async{
+  Future<void> checkIsFollowing() async {
     isFollowingProfileUser = await userRepository.checkIsFollowing(profileUser);
     notifyListeners();
   }
 
-  Future<void> unfollow() async{
+  Future<void> unfollow() async {
     await userRepository.unFollow(profileUser);
     isFollowingProfileUser = false;
     notifyListeners();
+  }
+
+  void popProfileUser() async {
+    if (popProfileUserIds.isNotEmpty) {
+      popUserId = popProfileUserIds.last;
+      popProfileUserIds.removeLast();
+      profileUser = await userRepository.getUserById(popUserId);
+    } else {
+      profileUser = currentUser;
+    }
+    getPost();
   }
 }

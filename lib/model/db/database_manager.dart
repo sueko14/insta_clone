@@ -318,15 +318,60 @@ class DatabaseManager {
     return true;
   }
 
-  Future<void> unFollow(User profileUser, User currentUser) async{
+  Future<void> unFollow(User profileUser, User currentUser) async {
     //CurrentUserのfollowingからの削除
-    await _db.collection("users").doc(currentUser.userId)
-        .collection("followings").doc(profileUser.userId)
+    await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .doc(profileUser.userId)
         .delete();
 
     //profileUserのfollowersからの削除
-    await _db.collection("users").doc(profileUser.userId)
-        .collection("followers").doc(currentUser.userId)
+    await _db
+        .collection("users")
+        .doc(profileUser.userId)
+        .collection("followers")
+        .doc(currentUser.userId)
         .delete();
+  }
+
+  Future<List<User>> getLikedUsers(String postId) async {
+    final query =
+        await _db.collection("likes").where("postId", isEqualTo: postId).get();
+    if (query.docs.isEmpty) {
+      return [];
+    }
+    var userIds = <String>[];
+    for (var element in query.docs) {
+      userIds.add(element.data()["likeUserId"]);
+    }
+    var likeUsers = <User>[];
+    for (String element in userIds) {
+      final user = await getUserInfoFromDbById(element);
+      likeUsers.add(user);
+    }
+    return likeUsers;
+  }
+
+  Future<List<User>> getFollowerUsers(String profileUserId) async {
+    final followerUserIds = await getFollowerUserIds(profileUserId);
+    var followerUsers = <User>[];
+    for (String element in followerUserIds) {
+      // Future.forEachでもおｋ。
+      final user = await getUserInfoFromDbById(element);
+      followerUsers.add(user);
+    }
+    return followerUsers;
+  }
+
+  Future<List<User>> getFollowingUsers(String profileUserId) async {
+    final followingUserIds = await getFollowingUserIds(profileUserId);
+    var followingUsers = <User>[];
+    for (String element in followingUserIds) {
+      final user = await getUserInfoFromDbById(element);
+      followingUsers.add(user);
+    }
+    return followingUsers;
   }
 }

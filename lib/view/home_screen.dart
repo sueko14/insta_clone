@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const ActivityPage(),
       ProfilePage(
         profileMode: ProfileMode.MYSELF,
+        isOpenFromProfileScreen: false,
       ),
     ];
     super.initState();
@@ -41,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
+        unselectedFontSize: 0.0, //issue回避 https://github.com/flutter/flutter/issues/86545
+        selectedFontSize: 0.0,
         //selectedItemColor: Colors.cyanAccent,
         currentIndex: _currentIndex,
         onTap: (index) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/generated/l10n.dart';
+import 'package:insta_clone/model/repositories/user_repository.dart';
 import 'package:insta_clone/style.dart';
 import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/profile/screen/profile_screen.dart';
@@ -22,9 +23,6 @@ class SearchPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(
-        child: Text("SearchPage"),
-      ),
     );
   }
 
@@ -41,6 +39,7 @@ class SearchPage extends StatelessWidget {
           builder: (_) => ProfileScreen(
             profileMode: ProfileMode.OTHER,
             selectedUser: selectedUser,
+            popProfileUserId: UserRepository.currentUser!.userId,
           ),
         ),
       );

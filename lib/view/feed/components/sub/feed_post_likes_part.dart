@@ -5,7 +5,9 @@ import 'package:insta_clone/data_models/post.dart';
 import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/style.dart';
+import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/comments/screens/comment_screen.dart';
+import 'package:insta_clone/view/who_cares_me/screen/who_cares_me_screen.dart';
 import 'package:insta_clone/view_model/feed_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -32,52 +34,34 @@ class FeedPostLikesPart extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    likeResult.isLikedToThisPost ?
-                    IconButton(
-                      onPressed: () => _unLikeIt(context),
-                      icon: const FaIcon(FontAwesomeIcons.solidHeart),
-                    ) :
-                    IconButton(
-                      onPressed: () => _likeIt(context),
-                      icon: const FaIcon(FontAwesomeIcons.heart),
-                    ),
+                    likeResult.isLikedToThisPost
+                        ? IconButton(
+                            onPressed: () => _unLikeIt(context),
+                            icon: const FaIcon(FontAwesomeIcons.solidHeart),
+                          )
+                        : IconButton(
+                            onPressed: () => _likeIt(context),
+                            icon: const FaIcon(FontAwesomeIcons.heart),
+                          ),
                     IconButton(
                       onPressed: () => _openCommentScreen(context),
                       icon: const FaIcon(FontAwesomeIcons.comment),
                     ),
                   ],
                 ),
-                Text(
-                  likeResult.likes.length.toString() +
-                      " " +
-                      S.of(context).likes,
-                  style: numberOfLikesTextStyle,
+                GestureDetector(
+                  onTap: () => _checkLikeUsers(context),
+                  child: Text(
+                    likeResult.likes.length.toString() +
+                        " " +
+                        S.of(context).likes,
+                    style: numberOfLikesTextStyle,
+                  ),
                 ),
               ],
             );
           } else {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () => _likeIt(context),
-                      icon: const FaIcon(FontAwesomeIcons.solidHeart),
-                    ),
-                    IconButton(
-                      onPressed: () => _openCommentScreen(context),
-                      icon: const FaIcon(FontAwesomeIcons.comment),
-                    ),
-                  ],
-                ),
-                Text(
-                  "0 ${S.of(context).likes}",
-                  style: numberOfLikesTextStyle,
-                ),
-              ],
-            );
+            return Container();
           }
         },
       ),
@@ -104,5 +88,17 @@ class FeedPostLikesPart extends StatelessWidget {
   _unLikeIt(BuildContext context) async {
     final feedViewModel = context.read<FeedViewModel>();
     await feedViewModel.unLikeIt(post);
+  }
+
+  _checkLikeUsers(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => WhoCaresMeScreen(
+          mode: WhoCaresMeMode.LIKE,
+          id: post.postId,
+        ),
+      ),
+    );
   }
 }

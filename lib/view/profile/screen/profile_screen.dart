@@ -6,13 +6,18 @@ import 'package:insta_clone/view/profile/page/profile_page.dart';
 class ProfileScreen extends StatelessWidget {
   final ProfileMode profileMode;
   final User selectedUser;
-  ProfileScreen({required this.profileMode, required this.selectedUser});
+  final String popProfileUserId;
+
+  ProfileScreen(
+      {required this.profileMode, required this.selectedUser, required this.popProfileUserId,});
 
   @override
   Widget build(BuildContext context) {
     return ProfilePage(
       profileMode: profileMode,
       selectedUser: selectedUser,
+      isOpenFromProfileScreen: true,
+      popProfileUserId: popProfileUserId,
     );
   }
 }

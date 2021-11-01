@@ -8,6 +8,7 @@ import 'package:insta_clone/view_model/login_view_model.dart';
 import 'package:insta_clone/view_model/post_view_model.dart';
 import 'package:insta_clone/view_model/profile_view_model.dart';
 import 'package:insta_clone/view_model/search_view_model.dart';
+import 'package:insta_clone/view_model/who_cares_me_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -71,6 +72,11 @@ List<SingleChildWidget> viewModels = [
   ChangeNotifierProvider<SearchViewModel>(
     create: (context) => SearchViewModel(
       userRepository: context.read<UserRepository>()
+    ),
+  ),
+  ChangeNotifierProvider<WhoCaresMeViewModel>(
+    create: (context) => WhoCaresMeViewModel(
+        userRepository: context.read<UserRepository>()
     ),
   ),
 ];
