@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:insta_clone/di/providers.dart';
 import 'package:insta_clone/generated/l10n.dart';
-import 'package:insta_clone/style.dart';
+import 'package:insta_clone/model/repositories/theme_change_repository.dart';
 import 'package:insta_clone/view/home_screen.dart';
 import 'package:insta_clone/view/login/screens/login_screen.dart';
 import 'package:insta_clone/view_model/login_view_model.dart';
+import 'package:insta_clone/view_model/theme_change_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  final themeChangeRepository = ThemeChangeRepository();
+  await themeChangeRepository.getIsDarkOn();
+
   timeAgo.setLocaleMessages("ja", timeAgo.JaMessages());
   runApp(
     MultiProvider(
@@ -28,6 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginViewModel = context.read<LoginViewModel>();
+    final themeChangeViewModel = Provider.of<ThemeChangeViewModel>(context);
 
     return MaterialApp(
       title: "Insta Clone",
@@ -39,16 +45,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(primary: Colors.white30),
-        ),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        fontFamily: RegularFont,
-      ),
+      theme: themeChangeViewModel.selectedTheme,
       // Consumer使わない理由：
       // Consumerは非同期処理の結果を待たずに描画をしてChangeNotifierの変更通知を受け取り描画をしなおす。
       // そのため、Consumerで実装する場合は、初期値をfalseとして代入するようなイメージになるが、そうすると
@@ -59,9 +56,9 @@ class MyApp extends StatelessWidget {
         future: loginViewModel.isSignedIn(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData && snapshot.data == true) {
-            return HomeScreen();
+            return const HomeScreen();
           } else {
-            return LoginScreen();
+            return const LoginScreen();
           }
         },
       ),

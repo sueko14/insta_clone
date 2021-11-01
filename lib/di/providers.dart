@@ -1,6 +1,7 @@
 import 'package:insta_clone/model/db/database_manager.dart';
 import 'package:insta_clone/model/location/location_manager.dart';
 import 'package:insta_clone/model/repositories/post_repository.dart';
+import 'package:insta_clone/model/repositories/theme_change_repository.dart';
 import 'package:insta_clone/model/repositories/user_repository.dart';
 import 'package:insta_clone/view_model/comment_view_model.dart';
 import 'package:insta_clone/view_model/feed_view_model.dart';
@@ -8,6 +9,7 @@ import 'package:insta_clone/view_model/login_view_model.dart';
 import 'package:insta_clone/view_model/post_view_model.dart';
 import 'package:insta_clone/view_model/profile_view_model.dart';
 import 'package:insta_clone/view_model/search_view_model.dart';
+import 'package:insta_clone/view_model/theme_change_view_model.dart';
 import 'package:insta_clone/view_model/who_cares_me_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -24,7 +26,10 @@ List<SingleChildWidget> independentModels = [
   ),
   Provider<LocationManager>(
     create: (_) => LocationManager(),
-  )
+  ),
+  Provider<ThemeChangeRepository>(
+    create: (_) => ThemeChangeRepository(),
+  ),
 ];
 
 List<SingleChildWidget> dependentModels = [
@@ -77,6 +82,11 @@ List<SingleChildWidget> viewModels = [
   ChangeNotifierProvider<WhoCaresMeViewModel>(
     create: (context) => WhoCaresMeViewModel(
         userRepository: context.read<UserRepository>()
+    ),
+  ),
+  ChangeNotifierProvider<ThemeChangeViewModel>(
+    create: (context) => ThemeChangeViewModel(
+      repository: Provider.of<ThemeChangeRepository>(context, listen: false),
     ),
   ),
 ];

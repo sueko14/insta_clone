@@ -4,6 +4,45 @@ const TitleFont = "Billabong";
 const RegularFont = "NotoSansJP-Medium";
 const BoldFont = "NotoSansJP-Bold";
 
+// THEME
+final darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  //buttonColor: Colors.white30,
+  //ElevatedButtonの色はbuttonColor属性では変更できないのでelevatedButtonTheme属性を使用
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: Colors.white30,
+    ),
+  ),
+  primaryIconTheme: const IconThemeData(
+    color: Colors.white,
+  ),
+  iconTheme: const IconThemeData(
+    color: Colors.white,
+  ),
+  fontFamily: RegularFont,
+);
+
+final lightTheme = ThemeData(
+  primaryColor: Colors.white,
+  brightness: Brightness.light,
+  //buttonColor: Colors.white,
+  //ElevatedButtonの色はbuttonColor属性では変更できないのでelevatedButtonTheme属性を使用
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      primary: Colors.white,
+    ),
+  ),
+  primaryIconTheme: const IconThemeData(
+    color: Colors.black,
+  ),
+  iconTheme: const IconThemeData(
+    color: Colors.black,
+  ),
+  fontFamily: RegularFont,
+);
+
+
 // LOGIN
 const loginTitleTextStyle = TextStyle(
   fontFamily: TitleFont,
@@ -92,4 +131,3 @@ const searchPageAppBarTitleTextStyle = TextStyle(
   fontFamily: RegularFont,
   color: Colors.grey,
 );
-
