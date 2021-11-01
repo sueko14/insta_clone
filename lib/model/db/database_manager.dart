@@ -7,6 +7,7 @@ import 'package:insta_clone/data_models/comment.dart';
 import 'package:insta_clone/data_models/like.dart';
 import 'package:insta_clone/data_models/post.dart';
 import 'package:insta_clone/data_models/user.dart';
+import 'package:insta_clone/model/repositories/user_repository.dart';
 
 class DatabaseManager {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -110,9 +111,9 @@ class DatabaseManager {
         .orderBy("postDateTime", descending: true)
         .get()
         .then((value) {
-          for (var element in value.docs) {
-            results.add(Post.fromMap(element.data()));
-          }
+      for (var element in value.docs) {
+        results.add(Post.fromMap(element.data()));
+      }
     });
     return results;
   }
@@ -247,9 +248,10 @@ class DatabaseManager {
     storageRef.delete();
   }
 
-  Future<List<String>> getFollowerUserIds(String userId) async{
-    final query = await _db.collection("users").doc(userId).collection("followers").get();
-    if(query.docs.isEmpty){
+  Future<List<String>> getFollowerUserIds(String userId) async {
+    final query =
+        await _db.collection("users").doc(userId).collection("followers").get();
+    if (query.docs.isEmpty) {
       return [];
     }
     var userIds = <String>[];
@@ -259,8 +261,72 @@ class DatabaseManager {
     return userIds;
   }
 
-  Future<void> updateProfile(User updateUser) async{
+  Future<void> updateProfile(User updateUser) async {
     final reference = _db.collection("users").doc(updateUser.userId);
     await reference.update(updateUser.toMap());
+  }
+
+  Future<List<User>> searchUsers(String queryString) async {
+    final query = await _db
+        .collection("users")
+        .orderBy("inAppUserName")
+        .startAt([queryString]).endAt(
+            [queryString + "\uf8ff"]) //queryStringで始まる奴を
+        .get();
+    if (query.docs.isEmpty) {
+      return [];
+    }
+
+    var searchedUsers = <User>[];
+    for (var element in query.docs) {
+      final selectedUser = User.fromMap(element.data());
+      if (selectedUser.userId != UserRepository.currentUser?.userId) {
+        searchedUsers.add(selectedUser);
+      }
+    }
+    return searchedUsers;
+  }
+
+  Future<void> follow(User profileUser, User currentUser) async {
+    //currentUserにとってのfollowing
+    await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .doc(profileUser.userId)
+        .set({"userId": profileUser.userId});
+
+    //profileUserにとってのfollower
+    await _db
+        .collection("users")
+        .doc(profileUser.userId)
+        .collection("followers")
+        .doc(currentUser.userId)
+        .set({"userId": currentUser.userId});
+  }
+
+  Future<bool> checkIsFollowing(User profileUser, User currentUser) async {
+    final query = await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .where("userId", isEqualTo: profileUser.userId)
+        .get();
+    if (query.docs.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> unFollow(User profileUser, User currentUser) async{
+    //CurrentUserのfollowingからの削除
+    await _db.collection("users").doc(currentUser.userId)
+        .collection("followings").doc(profileUser.userId)
+        .delete();
+
+    //profileUserのfollowersからの削除
+    await _db.collection("users").doc(profileUser.userId)
+        .collection("followers").doc(currentUser.userId)
+        .delete();
   }
 }

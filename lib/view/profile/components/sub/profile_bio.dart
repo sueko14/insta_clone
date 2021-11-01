@@ -36,15 +36,26 @@ class ProfileBio extends StatelessWidget {
   }
 
   _button(BuildContext context, User profileUser) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    final isFollowing = profileViewModel.isFollowingProfileUser;
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4.0),
       )),
-      child: mode == ProfileMode.MYSELF
-          ? Text(S.of(context).editProfile)
-          : Text("フォローする"), // TODO
-      onPressed: () => _openEditProfileScreen(context),
+      child: _getBioButtonText(context, mode, isFollowing),
+      onPressed: () {
+        if (mode == ProfileMode.MYSELF) {
+          _openEditProfileScreen(context);
+        } else {
+          if (isFollowing) {
+            _unFollow(context);
+          } else {
+            _follow(context);
+          }
+        }
+      },
     );
   }
 
@@ -55,5 +66,25 @@ class ProfileBio extends StatelessWidget {
         builder: (_) => EditProfileScreen(),
       ),
     );
+  }
+
+  void _unFollow(BuildContext context) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    profileViewModel.unfollow();
+  }
+
+  void _follow(BuildContext context) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    profileViewModel.follow();
+  }
+
+  Text _getBioButtonText(BuildContext context, ProfileMode mode, bool isFollowing) {
+    if (mode == ProfileMode.MYSELF) {
+      return Text(S.of(context).editProfile);
+    }
+    if (isFollowing) {
+      return Text(S.of(context).unFollow);
+    }
+    return Text(S.of(context).follow);
   }
 }

@@ -86,3 +86,10 @@ const profileBioTextStyle = TextStyle(
   fontFamily: RegularFont,
   fontSize: 13.0,
 );
+
+//SEARCH
+const searchPageAppBarTitleTextStyle = TextStyle(
+  fontFamily: RegularFont,
+  color: Colors.grey,
+);
+

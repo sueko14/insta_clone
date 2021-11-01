@@ -21,12 +21,15 @@ class ProfileViewModel extends ChangeNotifier {
   bool isProcessing = false;
   List<Post> posts = [];
 
+  bool isFollowingProfileUser = false;
+
   void setProfileUser(ProfileMode profileMode, User? selectedUser) {
     if (profileMode == ProfileMode.MYSELF) {
       profileUser = currentUser;
     } else {
       //TODO ProfileMode.OTHERのときは必要な形で実装。いつかリファクタしたい。
       profileUser = selectedUser!;
+      checkIsFollowing();
     }
   }
 
@@ -86,6 +89,23 @@ class ProfileViewModel extends ChangeNotifier {
     profileUser = currentUser;
 
     isProcessing = false;
+    notifyListeners();
+  }
+
+  Future<void> follow() async{
+    await userRepository.follow(profileUser);
+    isFollowingProfileUser = true;
+    notifyListeners();
+  }
+
+  Future<void> checkIsFollowing() async{
+    isFollowingProfileUser = await userRepository.checkIsFollowing(profileUser);
+    notifyListeners();
+  }
+
+  Future<void> unfollow() async{
+    await userRepository.unFollow(profileUser);
+    isFollowingProfileUser = false;
     notifyListeners();
   }
 }

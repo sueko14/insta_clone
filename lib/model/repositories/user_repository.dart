@@ -95,7 +95,6 @@ class UserRepository {
     String photoUrlUpdated,
     bool isImageFromFile,
   ) async {
-
     String updatePhotoUrl = "";
     if (isImageFromFile) {
       // ファイルをアップデートしている場合は、まず先にアップロードしてそのパスを取得する
@@ -113,10 +112,32 @@ class UserRepository {
     );
 
     await dbManager.updateProfile(updateUser);
-
   }
 
   Future<void> getCurrentUserById(String userId) async {
     currentUser = await dbManager.getUserInfoFromDbById(userId);
+  }
+
+  Future<List<User>> searchUsers(String query) async {
+    return dbManager.searchUsers(query);
+  }
+
+  Future<void> follow(User profileUser) async {
+    if (currentUser != null) {
+      await dbManager.follow(profileUser, currentUser!);
+    }
+  }
+
+  Future<bool> checkIsFollowing(User profileUser) async {
+    if (currentUser != null) {
+      return await dbManager.checkIsFollowing(profileUser, currentUser!);
+    }
+    return false;
+  }
+
+  Future<void> unFollow(User profileUser)async {
+    if (currentUser != null) {
+      return await dbManager.unFollow(profileUser, currentUser!);
+    }
   }
 }
